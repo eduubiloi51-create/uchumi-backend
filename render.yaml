@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: uchumi-feedback-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      # From your Turso database (turso.tech) — Settings/Overview page.
+      # Data lives here permanently; Render redeploys never touch it.
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      # Set this to the customer-site's deployed URL (e.g. on Vercel) once
+      # you know it, so QR codes point there.
+      - key: PUBLIC_BASE_URL
+        sync: false
+      # Comma-separated: the customer-site URL AND the staff-dashboard URL,
+      # e.g. https://uchumi-feedback.vercel.app,https://uchumi-dashboard.vercel.app
+      - key: ALLOWED_ORIGINS
+        sync: false
+      # Any hard-to-guess string. Needed once, to create your first CEO
+      # account via /setup.html (see README).
+      - key: SETUP_KEY
+        sync: false

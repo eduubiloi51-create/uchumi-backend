@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin tools — Uchumi Feedback</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#fffbfb; color:#1a1a1a; margin:0; padding:2rem 1.25rem 4rem; }
+  .wrap { max-width:640px; margin:0 auto; }
+  h1 { color:#ff000e; font-size:1.5rem; margin:0 0 0.3rem; }
+  p.sub { color:#6b6b6b; font-size:0.9rem; margin:0 0 1.5rem; }
+  .card { background:#fff; border:1px solid #ececec; border-radius:16px; padding:1.75rem; margin-bottom:1.5rem; box-shadow:0 12px 28px -14px rgba(26,26,26,0.18); }
+  .card h2 { font-size:1.05rem; margin:0 0 1rem; }
+  label { display:block; font-weight:600; font-size:0.85rem; margin-bottom:0.4rem; margin-top:0.9rem; }
+  label:first-of-type { margin-top:0; }
+  input, select { width:100%; box-sizing:border-box; border:1.5px solid #ececec; border-radius:8px; padding:0.7em 0.85em; font-size:1rem; }
+  input:focus, select:focus { outline:none; border-color:#ff000e; }
+  .hint { font-size:0.78rem; color:#6b6b6b; margin-top:0.3rem; }
+  button { background:#ff000e; color:#fff; border:none; border-radius:999px; padding:0.75em 1.4em; font-weight:600; font-size:0.95rem; cursor:pointer; margin-top:1.25rem; }
+  button:disabled { background:#ccc; cursor:not-allowed; }
+  button.ghost { background:transparent; color:#ff000e; border:1.5px solid #ececec; padding:0.4em 0.9em; font-size:0.82rem; margin-top:0; }
+  .msg { border-radius:8px; padding:0.8em 1em; font-size:0.85rem; margin-bottom:1rem; display:none; }
+  .msg.error { background:#ffe1e3; color:#ff000e; display:block; }
+  .msg.success { background:#1a1a1a; color:#fff; display:block; }
+  .locked { text-align:center; padding:2rem 1rem; }
+  .hidden { display:none !important; }
+  table { width:100%; border-collapse:collapse; font-size:0.87rem; margin-top:0.5rem; }
+  th, td { text-align:left; padding:0.6em 0.4em; border-bottom:1px solid #ececec; }
+  th { font-size:0.72rem; text-transform:uppercase; color:#6b6b6b; }
+  .badge { display:inline-block; padding:0.2em 0.6em; border-radius:999px; font-size:0.75rem; font-weight:600; background:#ececec; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Admin tools</h1>
+  <p class="sub">Create staff accounts, reset passwords, and see who has access — protected by your SETUP_KEY.</p>
+
+  <div class="card" id="keyCard">
+    <label for="masterKey">Setup key</label>
+    <input id="masterKey" type="text" autocomplete="off" />
+    <div class="hint">Find this on Render, under your backend service's Environment page.</div>
+    <button id="unlockBtn">Unlock</button>
+    <div class="msg" id="keyMsg" style="margin-top:1rem;"></div>
+  </div>
+
+  <div id="tools" class="hidden">
+
+    <div class="card">
+      <h2>Create a staff account</h2>
+      <div class="msg" id="createMsg"></div>
+      <label for="cName">Name</label>
+      <input id="cName" type="text" />
+      <label for="cEmail">Email</label>
+      <input id="cEmail" type="email" />
+      <label for="cPassword">Password</label>
+      <input id="cPassword" type="password" minlength="8" />
+      <div class="hint">At least 8 characters.</div>
+      <label for="cRole">Role</label>
+      <select id="cRole">
+        <option value="manager">Manager (one branch)</option>
+        <option value="supervisor">Supervisor (all branches)</option>
+        <option value="ceo">CEO / Head office (all branches, manages staff)</option>
+      </select>
+      <div id="branchRow">
+        <label for="cBranch">Branch</label>
+        <select id="cBranch"></select>
+      </div>
+      <button id="createBtn">Create account</button>
+    </div>
+
+    <div class="card">
+      <h2>Rename an account</h2>
+      <div class="msg" id="renameMsg"></div>
+      <label for="nEmail">Account email</label>
+      <input id="nEmail" type="email" />
+      <label for="nName">New name</label>
+      <input id="nName" type="text" />
+      <button id="renameBtn">Update name</button>
+    </div>
+
+    <div class="card">
+      <h2>Reset a password</h2>
+      <div class="msg" id="resetMsg"></div>
+      <label for="rEmail">Account email</label>
+      <input id="rEmail" type="email" />
+      <label for="rPassword">New password</label>
+      <input id="rPassword" type="password" minlength="8" />
+      <button id="resetBtn">Reset password</button>
+    </div>
+
+    <div class="card">
+      <h2>Existing staff</h2>
+      <div class="msg" id="listMsg"></div>
+      <table id="staffTable">
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Branch</th><th></th></tr></thead>
+        <tbody id="staffBody"></tbody>
+      </table>
+      <button class="ghost" id="refreshBtn" style="margin-top:1rem;">Refresh list</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/setup.js"></script>
+</body>
+</html>
